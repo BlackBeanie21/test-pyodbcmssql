@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import os, glob, sys, json, signal, logging, logging.handlers, MySQLdb, argparse, datetime
+import pyodbc
 import pycurl
 import csv
 from StringIO import StringIO
