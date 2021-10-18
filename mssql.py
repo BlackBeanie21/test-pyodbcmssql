@@ -108,11 +108,26 @@ def syncSourceMysql(path, output, deleteonly):
   sourceCols = sConfig[sid]['mapping'].keys()
   destCols = sConfig[sid]['mapping'].values()
   destCols.append('sid_imported')
-  curSource = dbSource.cursor(MySQLdb.cursors.DictCursor)
-  curSource.execute(sConfig[sid]['query'])
+  if(sConfig[sid]['dbtype'] == 'mysql'):
+    curSource = dbSource.cursor(MySQLdb.cursors.DictCursor)
+    curSource.execute(sConfig[sid]['query'])
+    
+  elif(sConfig[sid]['dbtype'] == 'mssql'):
+    result=[]
+     querymssql = "SELECT * FROM .."
+     curSource = dbSource.cursor(pyodbc.cursor())
+     curSource.execute(sConfig[sid]['query'])
+     columns = [column[0] for column in curSource.description]
+     for row in curSource.fetchall():
+       x = dict(zip(columns, row))
+       results.append(x)
+    
   row = curSource.fetchone()
   importedCount = 0
   errCount = 0
+  
+  
+  
   if sConfig[sid]['type'] != None:
     destCols.append('type')
   percents = ('%s, ' * len(destCols))[:-2]
